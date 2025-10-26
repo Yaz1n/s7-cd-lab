@@ -1,1 +1,1 @@
-# s7-cd-lab
+KTU S7 Compiler Design Lab
