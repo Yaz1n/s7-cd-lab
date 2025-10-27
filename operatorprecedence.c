@@ -1,97 +1,110 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
 
-char stack[50];
-int top = -1;
+#define SIZE 100
 
-// Stack operations
-void push(char c) {
-    stack[++top] = c;
-    stack[top+1] = '\0';
-}
-
-void pop() {
-    if(top >= 0) top--;
-    stack[top+1] = '\0';
-}
-
-char peek() {
-    if(top >= 0) return stack[top];
-    return '\0';
-}
-
-// Operator precedence table
-// order: +, *, i, (, ), $
-char precedence[6][6] = {
-    // +    *    i    (    )    $
-    {'>', '<', '<', '<', '>', '>'}, // +
-    {'>', '>', '<', '<', '>', '>'}, // *
-    {'>', '>', ' ', ' ', '>', '>'}, // i
-    {'<', '<', '<', '<', '=', ' '}, // (
-    {'>', '>', ' ', ' ', '>', '>'}, // )
-    {'<', '<', '<', '<', ' ', '='}  // $
+// Precedence table: '<' = shift, '>' = reduce, '=' = match, 'A' = accept
+char prec_table[7][7] = {
+    //   +    -    *    /    ^    i    $
+    { '>', '>', '<', '<', '<', '<', '>' }, // +
+    { '>', '>', '<', '<', '<', '<', '>' }, // -
+    { '>', '>', '>', '>', '<', '<', '>' }, // *
+    { '>', '>', '>', '>', '<', '<', '>' }, // /
+    { '>', '>', '>', '>', '>', '<', '>' }, // ^
+    { '>', '>', '>', '>', '>', ' ', '>' }, // i
+    { '<', '<', '<', '<', '<', '<', 'A' }  // $
 };
 
-int getIndex(char c) {
-    switch(c) {
+// Map symbol to table index
+int get_index(char symbol) {
+    switch (symbol) {
         case '+': return 0;
-        case '*': return 1;
-        case 'i': return 2;
-        case '(': return 3;
-        case ')': return 4;
-        case '$': return 5;
+        case '-': return 1;
+        case '*': return 2;
+        case '/': return 3;
+        case '^': return 4;
+        case 'i': return 5;
+        case '$': return 6;
+        case 'E': return 5; // Treat E like i for precedence
+        default:  return -1;
     }
-    return -1;
+}
+
+// Get topmost terminal in the stack
+char top_terminal(char stack[], int top) {
+    for (int i = top; i >= 0; i--) {
+        if (!isupper(stack[i])) // uppercase = non-terminal
+            return stack[i];
+    }
+    return '$';
+}
+
+// Print parsing step
+void print_step(char stack[], int top, char input[], int ptr, const char *action) {
+    for (int i = 0; i <= top; i++)
+        printf("%c", stack[i]);
+    printf("\t\t");
+    for (int i = ptr; i < strlen(input); i++)
+        printf("%c", input[i]);
+    printf("\t\t%s\n", action);
 }
 
 int main() {
-    char input[50];
-    printf("Enter expression (end without $): ");
+    char stack[SIZE], input[SIZE];
+    int top = 0, ptr = 0;
+
+    printf("Enter expression (use i for operand, end with $): ");
     scanf("%s", input);
-    strcat(input, "$"); // add end marker
 
-    push('$'); // initialize stack
-    int i = 0;
-    char a = input[i];
+    stack[0] = '$';
 
-    printf("\nSTACK\t\tINPUT\t\tACTION\n");
+    printf("\n%-20s %-20s %-10s\n", "STACK", "INPUT", "ACTION");
+    printf("-----------------------------------------------------------\n");
 
-    while(1) {
-        char topSym = peek();
-        printf("%-10s\t%-10s\t", stack, input+i);
+    while (1) {
+        char a = top_terminal(stack, top);
+        char b = input[ptr];
+        int ai = get_index(a), bi = get_index(b);
 
-        // Accept condition
-        if(topSym == '$' && a == '$') {
-            printf("ACCEPTED\n");
+        if (ai == -1 || bi == -1) {
+            printf("Invalid symbol encountered!\n");
             break;
         }
 
-        int row = getIndex(topSym);
-        int col = getIndex(a);
+        char relation = prec_table[ai][bi];
 
-        if(row == -1 || col == -1) {
-            printf("INVALID SYMBOL\n");
-            break;
+        if (relation == '<' || relation == '=') {
+            // Shift
+            stack[++top] = b;
+            ptr++;
+            print_step(stack, top, input, ptr, "Shift");
         }
-
-        char rel = precedence[row][col];
-
-        if(rel == '<' || rel == '=') {
-            if(a == '$') { // don't shift $
-                printf("REDUCE\n");
-                pop();
-                continue;
+        else if (relation == '>') {
+            // Reduce one handle
+            if (stack[top] == 'i') {
+                stack[top] = 'E'; // E -> i
+            } 
+            else if (top >= 2 &&
+                     stack[top] == 'E' &&
+                     (stack[top - 1] == '+' || stack[top - 1] == '-' ||
+                      stack[top - 1] == '*' || stack[top - 1] == '/' ||
+                      stack[top - 1] == '^') &&
+                     stack[top - 2] == 'E') {
+                top -= 2;
+                stack[top] = 'E'; // E -> E op E
             }
-            printf("SHIFT %c\n", a);
-            push(a);
-            a = input[++i];
-        } 
-        else if(rel == '>') {
-            printf("REDUCE\n");
-            pop();
-        } 
+            print_step(stack, top, input, ptr, "Reduce");
+        }
+        else if (relation == 'A') {
+            print_step(stack, top, input, ptr, "Accept");
+            printf("\n✅ Expression successfully parsed.\n");
+            break;
+        }
         else {
-            printf("INVALID RELATION\n");
+            print_step(stack, top, input, ptr, "Error");
+            printf("\n❌ Parsing error occurred.\n");
             break;
         }
     }
