@@ -1,0 +1,521 @@
+ALGORITHM:
+1. Start the program.
+2. Include necessary libraries: <stdio.h>, <stdlib.h>, <string.h>.
+3. Declare a global variable:
+ no_of_states – to store the total number of states in the NFA.
+4. Define a function reset(closure):
+ Input: 2D array closure[no_of_states][no_of_states].
+ Initialize the closure matrix such that:
+o closure[i][i] = 1 (each state is reachable from itself).
+o closure[i][j] = 0 for all other i != j.
+5. Define a function display(closure):
+ Print “Epsilon closure of all states:”.
+ For each state i:
+o Print q{i}: {.
+o For each state j:
+ If closure[i][j] == 1, print q{j}, .
+o Close the brace } and move to next line.
+6. In main() function:
+ Ask the user to enter the total number of states and store in no_of_states.
+ Declare a 2D array closure[no_of_states][no_of_states].
+ Open the NFA transition file "NFA.txt" in read mode.
+7. Initialize the closure matrix by calling reset(closure).
+8. Compute epsilon closure for each state:
+ For each state i from 0 to no_of_states-1:
+o Set state = i.
+o Read each transition from the input file using fscanf(INPUT, "%s %s
+%s", state1, inp, state2).
+ If the input symbol inp[0] is 'e' (epsilon) and the current state
+matches state1:
+ Mark closure[i][state2] = 1 (state2 is reachable from state i via
+epsilon).
+ Update state = state2 to follow chained epsilon transitions
+o After reading all transitions, rewind the file to read again for the
+next state.
+9. Display the epsilon closure matrix by calling display(closure).
+10. Close the program.
+
+
+
+
+
+
+AIM:
+Write a program to convert NFA with ε transition to NFA without ε transition.
+.
+ALGORITHM:
+1. Start the program.
+2. Include necessary libraries: <stdio.h>, <stdlib.h>, <string.h>.
+3. Declare global variables:
+ n → number of states
+ a → number of input symbols (last symbol may be epsilon)
+ f → number of final states
+4. Define a node structure for linked list representation of transitions:
+ int state → stores destination state
+ struct node *next → pointer to next transition
+5. Define functions:
+ reset(transition) → initialize all transitions to NULL.
+ printTransition(transition) → prints the transition table.
+ findalpha(inp, a, alphabet) → returns index of input symbol in alphabet array.
+ findClosure(start, state, set, transition, e_closure) → recursively computes
+epsilon closure for start state.
+ print_e_closure(e_closure, i) → prints epsilon closure of state i.
+6. In main() function:
+ Input number of states n and input symbols a.
+ Input alphabet symbols (epsilon is the last symbol if present).
+ Input number of final states f and the list of final states.
+ Initialize transition[n][a] array and reset it to NULL.
+7. Read NFA transitions from file NFA.txt:
+ For each line state1 inp state2:
+o Convert state strings to integers.
+o Find the index of input symbol in alphabet.
+o Add the transition to the linked list transition[from][index].
+8. Print the transition table using printTransition().
+9. Compute epsilon closure for all states:
+ For each state i:
+o Initialize set[] to 0.
+o Initialize e_closure[i][j] to 0.
+Call findClosure(i, i, set, transition, e_closure) to recursively mark
+reachable states via epsilon.
+10. Print epsilon closures of all states.
+11. Compute NFA without epsilon transitions:
+ For each state i and each input symbol j (except epsilon):
+o Initialize set[] to 0.
+o For every state k in epsilon closure of i:
+ Follow transitions on symbol j and mark reachable states in
+set[].
+o Print set[] as the set of states reachable from i on input j without
+epsilon.
+12. Print final states after epsilon closure.
+13. Stop the program
+
+
+
+
+
+
+
+
+AIM:
+Write a lex program to recognize all strings which does not contain first four characters
+of your name as a substring.
+ALGORITHM:
+1. Start the program.
+2. Include necessary libraries:
+ <stdio.h> → for input/output
+ <string.h> → for string operations
+3. Declare a global variable:
+ char prefix[5] → stores the first 4 characters of the user’s name
+4. Define Lex patterns:
+ [a-zA-Z]+ → matches any word composed of letters
+o If the word contains the prefix (strstr(yytext, prefix) returns true):
+ Print Rejected: '<word>' contains '<prefix>'
+o Else:
+ Print Accepted: '<word>'
+ \n → ignore newlines
+ . → ignore all other characters
+5. In main() function:
+ Prompt user: “Enter your name:”
+ Read input into prefix
+ Limit prefix to first 4 characters using prefix[4] = '\0'
+ Prompt user: “Now enter strings to test:”
+ Call yylex() to start scanning input
+6. yywrap() function:
+ Return 1 to indicate end of input
+7. Stop the program
+
+
+
+
+AIM:
+Write a YACC program to recognize a valid variable which starts with a letter
+followed by any number of letters or digits.
+ALGORITHM:
+1. Start the program.
+2. Include necessary libraries:
+ <stdio.h> → for input/output
+ <string.h> → for string operations
+3. Declare a global variable:
+ char prefix[5] → stores the first 4 characters of the user’s name
+4. Define Lex patterns:
+ [a-zA-Z]+ → matches any word composed of letters
+o If the word contains the prefix (strstr(yytext, prefix) returns true):
+ Print Rejected: '<word>' contains '<prefix>'
+o Else:
+ Print Accepted: '<word>'
+ \n → ignore newlines
+ . → ignore all other characters
+5. In main() function:
+ Prompt user: “Enter your name:”
+ Read input into prefix
+ Limit prefix to first 4 characters using prefix[4] = '\0'
+ Prompt user: “Now enter strings to test:”
+ Call yylex() to start scanning input
+6. yywrap() function:
+ Return 1 to indicate end of input
+7. Stop the program.
+
+
+
+AIM:
+Implementation of Calculator using LEX and YACC
+ALGORITHM:
+1. Start the program.
+2. Include necessary libraries:
+ <stdio.h> → for input/output
+ <string.h> → for string operations
+3. Declare a global variable:
+ char prefix[5] → stores the first 4 characters of the user’s name
+4. Define Lex patterns:
+ [a-zA-Z]+ → matches any word composed of letters
+o If the word contains the prefix (strstr(yytext, prefix) returns true):
+ Print Rejected: '<word>' contains '<prefix>'
+o Else:
+ Print Accepted: '<word>'
+ \n → ignore newlines
+ . → ignore all other characters
+5. In main() function:
+ Prompt user: “Enter your name:”
+ Read input into prefix
+ Limit prefix to first 4 characters using prefix[4] = '\0'
+ Prompt user: “Now enter strings to test:”
+ Call yylex() to start scanning input
+6. yywrap() function:
+ Return 1 to indicate end of input
+7. Stop the program.
+
+
+
+
+
+
+AIM:
+Write a YACC program to check the syntax of FOR statement in C.
+ALGORITHM:
+1. Start and Initialize program
+ Print "Enter FOR statements:".
+ Call yyparse() to begin parsing input.
+2. Lexical Analysis (Lex role):
+ Read input character by character.
+ Classify tokens as follows:
+• "for" → return FOR token.
+• Keywords (if, else, while, do, return) → return KEYWORD.
+• Identifiers ([a-zA-Z_][a-zA-Z0-9_]*) → return ID.
+• Numbers ([0-9]+) → return NUMBER.
+• Relational operators (==, !=, <, >, <=, >=) → return RELOP.
+• Assignment = → return '='.
+• Arithmetic operators (+, -, *, /) → return respective tokens.
+• Increment/Decrement (++, --) → return INC/DEC.
+• Symbols ({, }, (, ), ;) → return respective tokens.
+• Whitespace (space, tab, newline) → ignore.
+• Any other character → return INVALID.
+3. Syntax Analysis (Yacc role):
+ Apply grammar rules to validate FOR statement structure:
+for_statement → FOR '(' initialization ';' condition ';' update ')' statement
+ Check components of FOR statement:
+• Initialization → variable declaration or assignment expression.
+• Condition → relational expression or empty.
+• Update → expression (like increment/decrement) or empty.
+• Statement → simple statement (expression;) or compound statement ({ ... }).
+4. Expression Validation:
+ Assignment form: ID = expression.
+ Relational check: ID RELOP expression.
+ Arithmetic: ID + expr, ID - expr, etc.
+ Increment/Decrement: ID++, ++ID, ID--, --ID.
+ Valid atomic units: NUMBER, ID
+5. Statement Validation:
+ Simple Statement → expression; or just ;.
+ Compound Statement → { statement_list } or { }.
+ Statement List → sequence of statements inside { }.
+6. On Successful Parsing
+ Print "Valid FOR statement".
+7. On Syntax Error
+ Call yyerror() and print "Syntax error".
+8. Repeat steps 2–7 until user ends program.
+9. Stop
+
+
+
+
+
+
+
+
+
+AIM:
+EXPERIMENT NO: 3.1
+OPERATOR PRECEDENCE PARSER
+Date: 10/09/25
+Develop an operator precedence parser for a given language.
+ALGORITHM:
+1. Start the program.
+2. Include necessary header files and define a constant:
+• define SIZE 100 → defines maximum size for stack and input.
+3. Initialize the precedence table (prec_table):
+• A 2D array where:
+o '<' → Shift
+o '>' → Reduce
+o '=' → Match
+o 'A' → Accept
+• The table defines relationships between operators: + - * / ^ i $.
+4. Define function get_index(char symbol):
+• Maps each symbol (+, -, *, /, ^, i, $, E) to a row/column index in the precedence
+table.
+5.Define function top_terminal(char stack[], int top):
+• Scans the stack from top to bottom.
+• Returns the topmost terminal symbol (ignores non-terminals like E).
+• If no terminal found, returns $.
+6. Define function print_step(char stack[], int top, char input[], int ptr, const char
+*action):
+• Displays the current contents of the stack, the remaining input, and the action
+performed (Shift, Reduce, Accept, or Error).
+7. In main() function:
+• Declare stack[SIZE] and input[SIZE].
+• Initialize top = 0 and ptr = 0.
+• Prompt user: “Enter expression (use i for operand, end with $):”
+• Read input expression into input.
+• Initialize stack with $ as the bottom marker.
+8. Display column headers:
+• Print “STACK”, “INPUT”, and “ACTION” for tracing steps.
+9. Start parsing loop:
+• Get topmost terminal a from stack using top_terminal().
+• Get next input symbol b = input[ptr].
+• Retrieve precedence relation from table:
+prec_table[get_index(a)][get_index(b)].
+10. Perform actions based on relation:
+• If < or =:
+→ Shift operation
+→ Push b onto stack and move to next input symbol (ptr++).
+→ Print current step with “Shift”.
+• If >:
+→ Reduce operation
+→ Check if the top of stack is:
+o 'i' → Replace with 'E'.
+o 'E op E' → Reduce to 'E'.
+→ Print current step with “Reduce”.
+• If 'A':
+→ Print current step with “Accept”.
+→ Stop parsing (successful expression).
+• Otherwise (relation invalid):
+→ Print “Error”.
+→ Stop parsing (invalid expression).
+11. End the program.
+
+
+
+
+
+
+
+
+
+AIM:
+EXPERIMENT NO: 3.2
+FIRST AND FOLLOW
+Date: 10/09/25
+Write a program to Simulate First and Follow of any given grammar.
+ALGORITHM:
+1. Start
+2. Input the number of productions n.
+3. Read n grammar productions into the array prods[50][50].
+4. Initialize arrays:
+• firsts[26][50] to store FIRST sets.
+• follows[26][50] to store FOLLOW sets.
+• is_first_done[26] and is_follow_done[26] to mark completion status.
+5. Set all is_first_done[i] = 0 and is_follow_done[i] = 0.
+6. Define function isTerminal(c) to check if a symbol is terminal or non-terminal.
+7. Define function first(nonterm) to compute FIRST set:
+• Initialize an empty array curr_firsts[].
+• For each production where LHS = nonterm, scan RHS symbols.
+• If a terminal is found, add it to curr_firsts[].
+• If a non-terminal is found and its FIRST not yet computed, call first()
+recursively.
+• Add symbols from the called non-terminal’s FIRST set into curr_firsts[].
+• If epsilon 'e' is found, continue to the next symbol.
+• Store the result in firsts[nonterm - 65] and mark is_first_done[nonterm-65] = 1.
+8. Define function follow(nonterm) to compute FOLLOW set:
+• Initialize an empty array curr_follows[].
+• If nonterm is the start symbol, add $ to curr_follows[].
+• For each production, scan RHS symbols.
+• If nonterm is found and followed by a terminal, add that terminal to
+curr_follows[].
+• If followed by a non-terminal, add all symbols from its FIRST set except
+epsilon.
+• If epsilon exists or nonterm is at the end of production, add FOLLOW of LHS
+to curr_follows[].
+• Store the result in follows[nonterm - 65] and mark is_follow_done[nonterm -
+65] = 1.
+9. In main():
+• Input the productions.
+• For each non-terminal, call first() if not already computed.
+• For each non-terminal, call follow() if not already computed.
+10. Display all FIRST and FOLLOW sets for each non-terminal.
+11. Stop
+
+
+
+
+
+
+
+
+
+
+AIM:
+EXPERIMENT NO: 3.3
+RECURSIVE DESCENT
+PARSER
+Date: 18/09/25
+Construct a recursive descent parser for an expression.
+ALGORITHM:
+1. Start
+2. Declare a global pointer input to store the input arithmetic expression.
+3. Define helper functions:
+o skip_whitespace() — skips all spaces in the input.
+o match(expected) — checks if the current character matches the
+expected one.
+▪ If yes, move to the next character and return 1.
+▪ Else, return 0.
+4. Define function number() to parse numbers:
+o Skip whitespace.
+o If the next character is not a digit, print error and exit.
+o Convert consecutive digits into an integer value.
+o Return the numeric value.
+5. Define function factor() to handle:
+o NUMBER → directly return its value using number().
+o '(' expr ')' → recursively evaluate the expression inside parentheses.
+▪ If ')' not found, print error and exit.
+6. Define function term() for multiplication and division:
+o Call factor() and store result in value.
+o While next character is * or /:
+▪ If *, multiply value by next factor().
+▪ If /, divide value by next factor().
+▪ If divisor is 0, print division by zero error and exit.
+o Return the computed value.
+7. Define function expr() for addition and subtraction:
+o Call term() and store result in value.
+o While next character is + or -:
+▪ If +, add next term() to value.
+▪ If -, subtract next term() from value.
+o Return the final value.
+8. In main():
+o Read the input expression from the user.
+o Initialize the input pointer to the entered string.
+o Call expr() to evaluate the expression.
+Skip whitespace and check for any unexpected characters.
+▪ If found, display error message.
+o Print the final result of the expression.
+9. Stop
+
+
+
+
+
+
+
+
+
+AIM:
+EXPERIMENT NO: 3.4
+SHIFT REDUCE PARSER
+Date: 25/09/25
+Construct a Shift Reduce Parser for a given language.
+ALGORITHM:
+1. Start
+2. Declare variables:
+• inp[] → to store the input string.
+• stack[] → to represent the parsing stack.
+• top → stack pointer initialized to -1.
+• len → length of the input string.
+3. Define grammar rules:
+• S → S + S
+• S → S * S
+• S → ( S )
+• S → i
+4. Define print_details() function:
+• Prints the current contents of the stack and remaining input.
+• Displays the performed action ("SHIFT" or "REDUCE").
+5. Define check_for_reduce() function:
+• Continuously checks for patterns on the stack that match the grammar rules.
+• If a matching pattern is found:
+o Replace it with non-terminal S.
+o Print "REDUCE" action using print_details().
+o Repeat reduction until no further rule applies.
+6. In main() function:
+• Prompt user to enter input string.
+• Read the input and find its length.
+• Print the table headers: “Stack”, “Input”, “Action”.
+7. For each character in input:
+• Push the current symbol onto the stack (SHIFT operation).
+• Print “SHIFT” action using print_details().
+• Call check_for_reduce() to see if the stack can be reduced using any grammar
+rule.
+8. After all input symbols are processed:
+• If the stack has only one symbol 'S', print “Accepted.”
+• Otherwise, print “Rejected.”
+9. Stop
+
+
+
+
+
+
+
+
+
+
+
+AIM:
+EXPERIMENT NO: 4.1
+INTERMEDIATE CODE
+GENERATION
+Date: 25/09/25
+Implement Intermediate code generation for simple expressions.
+ALGORITHM:
+1. Start
+2. Include necessary header files:
+3. Define a structure TAC to store one three-address instruction containing:
+o result → temporary variable (e.g., t0, t1)
+o op → operator (+, -, *, /)
+o arg1 → first operand
+o arg2 → second operand
+4. Declare necessary global variables:
+o stack[][] → stack for operands
+o tac[] → array of TAC instructions
+o top → stack pointer initialized to -1
+o tac_index → index to store next TAC instruction
+5. Define helper functions:
+o push(item) → pushes operand to stack
+o pop() → removes and returns top element from stack
+o is_operator(c) → checks if character is one of +, -, *, /
+o get_temp(temp) → generates a new temporary variable name like t0,
+t1, etc.
+o precedence(op) → returns operator precedence
+▪ + or - → 1
+▪ * or / → 2
+6. Define generate_tac(expr) function:
+o Initialize an empty operator stack op_stack[].
+o For each character in the expression:
+▪ If it’s whitespace: skip it.
+▪ If it’s an operand (alphabet or digit):
+▪ Extract the full operand (e.g., ab, x1).
+▪ Push it onto the operand stack.
+▪ If it’s an operator:
+▪ While the top of the operator stack has higher or equal
+precedence, pop two operands and:
+▪ Create a temporary variable (e.g., t0).
+▪ Store TAC as t0 = arg1 op arg2.
+▪ Push t0 back onto the operand stack.
+Push the new operator onto the operator stack.
+o After reading the entire expression:
+▪ Pop any remaining operators from the operator stack and
+generate TAC for them similarly.
+7. Define print_tac() function:
+o Display the generated TAC in the format:
+o result = arg1 op arg2
+8. In main() function:
+o Prompt user to enter an arithmetic expression (e.g., a+b*c).
+o Remove newline character from input.
+o Call generate_tac(expr) to process and generate TAC.
+o Call print_tac() to display the three-address code.
+9. Stop
